@@ -1,0 +1,36 @@
+on: [push]
+
+name: debbuild
+
+env:
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  debbuild:
+    name: bcachefs-tools
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install build-deps
+        run: |
+          sudo apt-get update && sudo apt-get -y install pkg-config libaio-dev libblkid-dev \
+              libkeyutils-dev liblz4-dev libsodium-dev liburcu-dev libzstd-dev \
+              uuid-dev zlib1g-dev valgrind libudev-dev python3-pytest python3-docutils \
+              debhelper llvm clang libclang-dev rustc cargo \
+              devscripts
+      - name: Install Rust stable
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: stable
+            profile: minimal
+            override: true
+      - name: Make all
+        run: make -j4 deb
+      - name: Make check
+        run: make check && mkdir dist && mv ../*.deb ./dist/
+
+      - name: Upload deb
+        uses: actions/upload-artifact@v3
+        with:
+          name: bcachefs-tools
+          path: dist
