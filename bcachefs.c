@@ -41,14 +41,6 @@ static void usage(void)
 	     "Repair:\n"
 	     "  fsck                     Check an existing filesystem for errors\n"
 	     "\n"
-#if 0
-	     "Startup/shutdown, assembly of multi device filesystems:\n"
-	     "  assemble                 Assemble an existing multi device filesystem\n"
-	     "  incremental              Incrementally assemble an existing multi device filesystem\n"
-	     "  run                      Start a partially assembled filesystem\n"
-	     "  stop	                 Stop a running filesystem\n"
-	     "\n"
-#endif
 	     "Commands for managing a running filesystem:\n"
 	     "  fs usage                 Show disk usage\n"
 	     "\n"
@@ -205,17 +197,6 @@ int main(int argc, char *argv[])
 		return cmd_show_super(argc, argv);
 	if (!strcmp(cmd, "set-option"))
 		return cmd_set_option(argc, argv);
-
-#if 0
-	if (!strcmp(cmd, "assemble"))
-		return cmd_assemble(argc, argv);
-	if (!strcmp(cmd, "incremental"))
-		return cmd_incremental(argc, argv);
-	if (!strcmp(cmd, "run"))
-		return cmd_run(argc, argv);
-	if (!strcmp(cmd, "stop"))
-		return cmd_stop(argc, argv);
-#endif
 
 	if (!strcmp(cmd, "unlock"))
 		return cmd_unlock(argc, argv);
