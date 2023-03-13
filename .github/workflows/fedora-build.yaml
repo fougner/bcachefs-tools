@@ -1,0 +1,35 @@
+on: [push]
+
+name: rpmbuild
+
+env:
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  rpmbuild:
+    name: bcachefs-tools
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/fedora:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install build essentials
+        run: |
+          dnf install -y nodejs make rpmdevtools yum-utils
+      - name: Install Rust stable
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: stable
+            profile: minimal
+            override: true
+      - name: Install build-deps
+        run: |
+          dnf builddep -y packaging/bcachefs-tools.spec
+      - name: Make all
+        run: make -j4 rpm
+
+      - name: Upload rpm
+        uses: actions/upload-artifact@v3
+        with:
+          name: bcachefs-tools-rpm
+          path: rpmbuild
