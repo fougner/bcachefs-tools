@@ -64,6 +64,7 @@ fn ask_for_key(sb: &bch_sb_handle) -> anyhow::Result<()> {
     use bch_bindgen::bcachefs::{self, bch2_chacha_encrypt_key, bch_encrypted_key, bch_key};
     use byteorder::{LittleEndian, ReadBytesExt};
     use std::os::raw::c_char;
+    use std::io::{stdin, IsTerminal};
 
     let key_name = std::ffi::CString::new(format!("bcachefs:{}", sb.sb().uuid())).unwrap();
     if check_for_key(&key_name)? {
@@ -72,7 +73,7 @@ fn ask_for_key(sb: &bch_sb_handle) -> anyhow::Result<()> {
 
     let bch_key_magic = BCH_KEY_MAGIC.as_bytes().read_u64::<LittleEndian>().unwrap();
     let crypt = sb.sb().crypt().unwrap();
-    let pass = if atty::is(atty::Stream::Stdin) {
+    let pass = if stdin().is_terminal() {
         rpassword::read_password_from_tty(Some("Enter passphrase: "))?
     } else {
         let mut line = String::new();

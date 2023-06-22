@@ -1,4 +1,3 @@
-use atty::Stream;
 use log::{error};
 use bch_bindgen::bcachefs;
 use bch_bindgen::opt_set;
@@ -11,6 +10,7 @@ use bch_bindgen::btree::BtreeIterFlags;
 use clap::Parser;
 use std::ffi::{CStr, OsStr, c_int, c_char};
 use std::os::unix::ffi::OsStrExt;
+use std::io::{stdout, IsTerminal};
 
 fn list_keys(fs: &Fs, opt: Cli) -> anyhow::Result<()> {
     let trans = BtreeTrans::new(fs);
@@ -118,7 +118,7 @@ struct Cli {
     fsck:       bool,
 
     /// Force color on/off. Default: autodetect tty
-    #[arg(short, long, action = clap::ArgAction::Set, default_value_t=atty::is(Stream::Stdout))]
+    #[arg(short, long, action = clap::ArgAction::Set, default_value_t=stdout().is_terminal())]
     colorize:   bool,
    
     /// Verbose mode

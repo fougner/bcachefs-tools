@@ -1,4 +1,3 @@
-use atty::Stream;
 use bch_bindgen::{bcachefs, bcachefs::bch_sb_handle};
 use log::{info, debug, error, LevelFilter};
 use clap::Parser;
@@ -9,6 +8,7 @@ use crate::key::KeyLoc;
 use crate::logger::SimpleLogger;
 use std::ffi::{CStr, CString, OsStr, c_int, c_char, c_void};
 use std::os::unix::ffi::OsStrExt;
+use std::io::{stdout, IsTerminal};
 
 fn mount_inner(
     src: String,
@@ -152,7 +152,7 @@ struct Cli {
     options:        String,
 
     /// Force color on/off. Default: autodetect tty
-    #[arg(short, long, action = clap::ArgAction::Set, default_value_t=atty::is(Stream::Stdout))]
+    #[arg(short, long, action = clap::ArgAction::Set, default_value_t=stdout().is_terminal())]
     colorize:       bool,
 
     /// Verbose mode
