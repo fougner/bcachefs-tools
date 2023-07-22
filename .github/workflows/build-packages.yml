@@ -27,6 +27,9 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "rust-src"
       - name: Make deb
         run: |
           make -j`nproc` deb
@@ -52,6 +55,9 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
       - name: Install build-deps
         run: dnf builddep -y packaging/bcachefs-tools.spec
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "rust-src"
       - name: Make rpm
         run: |
           make -j`nproc` rpm
@@ -84,6 +90,9 @@ jobs:
       - name: Install Rust ${{ env.MSRV }} toolchain
         run: |
           rustup install --profile minimal ${{ env.MSRV }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "rust-src"
       - name: Make
         run: |
           CARGO_TOOLCHAIN_VERSION=${{ env.MSRV }} make -j`nproc`
