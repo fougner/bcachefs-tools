@@ -186,6 +186,10 @@ bcachefs-principles-of-operation.pdf: doc/bcachefs-principles-of-operation.tex
 
 doc: bcachefs-principles-of-operation.pdf
 
+.PHONY: cargo-update-msrv
+cargo-update-msrv:
+	cargo +nightly generate-lockfile --manifest-path rust-src/Cargo.toml -Zmsrv-policy
+
 .PHONY: update-bcachefs-sources
 update-bcachefs-sources:
 	git rm -rf --ignore-unmatch libbcachefs
