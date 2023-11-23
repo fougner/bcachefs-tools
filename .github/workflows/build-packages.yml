@@ -29,6 +29,7 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
       - name: Make deb
         run: |
+          cc --version
           make -j`nproc` deb
           mkdir dist && mv ../*.deb ./dist/
       - name: Upload deb
